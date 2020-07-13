@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -51,7 +46,7 @@ namespace RMDesktopUI.Helpers
 
         private static void PasswordChanged(object sender, RoutedEventArgs e)
         {
-            PasswordBox password = sender as PasswordBox;
+            var password = sender as PasswordBox;
 
             SetBoundPassword(password, password.Password);
 
