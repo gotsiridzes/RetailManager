@@ -103,7 +103,6 @@ namespace RMDesktopUI.ViewModels
 			{
 				ErrorMessage = ex.Message; 
 			}
-
 		}
 
 	}
