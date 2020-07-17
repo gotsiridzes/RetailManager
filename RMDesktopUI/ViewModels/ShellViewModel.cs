@@ -1,21 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Caliburn.Micro;
-using RMDesktopUI.Views;
+﻿using Caliburn.Micro;
+using RMDesktopUI.EventModels;
 
 namespace RMDesktopUI.ViewModels
 {
-    public class ShellViewModel : Conductor<object>
+    public class ShellViewModel : Conductor<object>, IHandle<LogOnEvent>
     {
-        LoginViewModel loginVM;
+        private IEventAggregator events;
+        private SalesViewModel salesVM;
+        private SimpleContainer container;
 
-        public ShellViewModel(LoginViewModel loginVM)
+        public ShellViewModel(IEventAggregator events, 
+            SalesViewModel salesVM,
+            SimpleContainer container)
         {
-            this.loginVM = loginVM;
-            ActivateItem(loginVM);
+            this.events = events;
+            this.salesVM = salesVM;
+            this.container = container;
+
+            events.Subscribe(this);
+
+            ActivateItem(container.GetInstance<LoginViewModel>());
+        }
+
+        public void Handle(LogOnEvent message)
+        {
+            ActivateItem(salesVM);
         }
     }
 }

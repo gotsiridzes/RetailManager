@@ -1,10 +1,8 @@
 ﻿using Caliburn.Micro;
-using RMDesktopUI.Helpers;
 using System.Threading.Tasks;
-using System.Windows;
 using System;
 using RMDesktopUI.Library.API;
-using RMDesktopUI.Library.Models;
+using RMDesktopUI.EventModels;
 
 namespace RMDesktopUI.ViewModels
 {
@@ -13,10 +11,12 @@ namespace RMDesktopUI.ViewModels
 		private string userName;
 		private string password;
 		private IApiHelper apiHelper;
+		private IEventAggregator events;
 
-		public LoginViewModel(IApiHelper apiHelper)
+		public LoginViewModel(IApiHelper apiHelper, IEventAggregator events)
 		{
 			this.apiHelper = apiHelper;
+			this.events = events;
 		}
 
 		public string UserName
@@ -32,7 +32,6 @@ namespace RMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => CanLogIn);
 			}
 		}
-
 
 		public string Password
 		{
@@ -78,8 +77,6 @@ namespace RMDesktopUI.ViewModels
 			}
 		}
 
-
-
 		public bool CanLogIn//(string userName, string password)
 		{
 			get
@@ -103,15 +100,13 @@ namespace RMDesktopUI.ViewModels
 				// მომხმარებელზე დამატებითი ინფორმაციის მიღება
 
 				await apiHelper.GetLoggedInUserInfo(result.Access_Token);
-			
+
+				events.PublishOnUIThread(new LogOnEvent());
 			}
 			catch (Exception ex)
 			{
 				ErrorMessage = ex.Message; 
 			}
 		}
-
-
-
 	}
 }

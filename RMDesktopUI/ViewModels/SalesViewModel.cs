@@ -1,14 +1,9 @@
 ﻿using Caliburn.Micro;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RMDesktopUI.ViewModels
 {
-    public class SalesViewModel : Screen
+	public class SalesViewModel : Screen
     {
 		private BindingList<string> products;
 		private int itemQuantity;
@@ -136,8 +131,5 @@ namespace RMDesktopUI.ViewModels
 		{
 
 		}
-
-
-
 	}
 }
