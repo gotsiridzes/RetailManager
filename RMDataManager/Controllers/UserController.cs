@@ -2,6 +2,7 @@
 using RMDataManager.Library.DataAccess;
 using RMDataManager.Library.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using System.Web.Http;
 
@@ -11,13 +12,14 @@ namespace RMDataManager.Controllers
     public class UserController : ApiController
     {
         // GET: User/Details/5
-        public List<UserModel> GetById()
+        [HttpGet]
+        public UserModel GetById()
         {
             var userId = RequestContext.Principal.Identity.GetUserId();
 
             var data = new UserData();
 
-            return data.GetUserById(userId);
+            return data.GetUserById(userId).First();
         }
     }
 }

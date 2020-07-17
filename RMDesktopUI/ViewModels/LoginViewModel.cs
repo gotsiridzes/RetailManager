@@ -3,6 +3,8 @@ using RMDesktopUI.Helpers;
 using System.Threading.Tasks;
 using System.Windows;
 using System;
+using RMDesktopUI.Library.API;
+using RMDesktopUI.Library.Models;
 
 namespace RMDesktopUI.ViewModels
 {
@@ -97,6 +99,10 @@ namespace RMDesktopUI.ViewModels
 			{
 				ErrorMessage = string.Empty;
 				var result = await apiHelper.Authenticate(UserName, Password);
+
+				// მომხმარებელზე დამატებითი ინფორმაციის მიღება
+
+				await apiHelper.GetLoggedInUserInfo(result.Access_Token);
 			
 			}
 			catch (Exception ex)
@@ -104,6 +110,8 @@ namespace RMDesktopUI.ViewModels
 				ErrorMessage = ex.Message; 
 			}
 		}
+
+
 
 	}
 }
