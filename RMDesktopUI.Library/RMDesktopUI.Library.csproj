@@ -50,8 +50,11 @@
   <ItemGroup>
     <Compile Include="API\ApiHelper.cs" />
     <Compile Include="API\IApiHelper.cs" />
+    <Compile Include="API\IProductEndpoint.cs" />
+    <Compile Include="API\ProductEndpoint.cs" />
     <Compile Include="Models\ILoggedInUserModel.cs" />
     <Compile Include="Models\LoggedInUserModel.cs" />
+    <Compile Include="Models\ProductModel.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

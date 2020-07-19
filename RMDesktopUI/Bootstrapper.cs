@@ -27,7 +27,9 @@ namespace RMDesktopUI
 
         protected override void Configure()
         {
-            container.Instance(container);
+            container
+                .Instance(container)
+                .PerRequest<IProductEndpoint, ProductEndpoint>();
 
             container
                 .Singleton<IApiHelper, ApiHelper>()

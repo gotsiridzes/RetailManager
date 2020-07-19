@@ -8,20 +8,17 @@ using System.Threading.Tasks;
 
 namespace RMDataManager.Library.DataAccess
 {
-    public class UserData
+    public class ProductData
     {
         /// <summary>
-        /// მომხმარებლის ინფორმაციის წამოღება მონაცემთა ბაზიდან
+        /// პროდუქტების ინფორმაციის წამოღება მონაცემთა ბაზიდან
         /// </summary>
-        /// <param name="id"></param>
         /// <returns></returns>
-        public List<UserModel> GetUserById(string id)
+        public List<ProductModel> GetProducts()
         {
             var sql = new SqlDataAccess();
 
-            var parameters = new { Id = id };
-
-            var data = sql.LoadData<UserModel, dynamic>("dbo.spSelectUser", parameters, "RMData");
+            var data = sql.LoadData<ProductModel, dynamic>("dbo.spSelectProducts", new { }, "RMData");
 
             return data;
         }
