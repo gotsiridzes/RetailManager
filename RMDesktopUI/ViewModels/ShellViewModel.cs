@@ -19,7 +19,7 @@ namespace RMDesktopUI.ViewModels
 
             events.Subscribe(this);
 
-            ActivateItem(container.GetInstance<LoginViewModel>());
+            ActivateItem(IoC.Get<LoginViewModel>());
         }
 
         public void Handle(LogOnEvent message)
