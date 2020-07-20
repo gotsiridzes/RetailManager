@@ -75,7 +75,7 @@ namespace RMDesktopUI.ViewModels
 
 		private decimal CalculateSubTotal()
 		{
-			decimal subTotal = 0;
+			decimal subTotal = decimal.Zero;
 
 			foreach (var item in Cart)
 				subTotal += (item.Product.RetailPrice * item.QuantityInCart);
@@ -104,7 +104,7 @@ namespace RMDesktopUI.ViewModels
 
 		private decimal CalculateTax()
 		{
-			decimal taxAmount = 0;
+			decimal taxAmount = decimal.Zero;
 			decimal taxRate = configHelper.GetTaxRate() / 100;
 
 			foreach (var item in Cart)
