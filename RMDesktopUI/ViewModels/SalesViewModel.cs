@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using RMDesktopUI.Library.API;
+using RMDesktopUI.Library.Helpers;
 using RMDesktopUI.Library.Models;
 using System.ComponentModel;
 using System.Linq;
@@ -14,6 +15,13 @@ namespace RMDesktopUI.ViewModels
 		private IProductEndpoint productEndpoint;
 		private BindingList<CartItemModel> cart = new BindingList<CartItemModel>();
 		private ProductModel selectedProduct;
+		private IConfigHelper configHelper;
+
+		public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
+		{
+			this.productEndpoint = productEndpoint;
+			this.configHelper = configHelper;
+		}
 
 		public BindingList<ProductModel> Products
 		{
@@ -28,7 +36,6 @@ namespace RMDesktopUI.ViewModels
 			}
 		}
 
-
 		public int ItemQuantity
 		{
 			get 
@@ -42,7 +49,6 @@ namespace RMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => CanAddToCart);
 			}
 		}
-
 
 		public BindingList<CartItemModel> Cart
 		{
@@ -59,34 +65,54 @@ namespace RMDesktopUI.ViewModels
 
 		public string SubTotal
 		{
-			get 
+			get
 			{
-				decimal subTotal = 0;
+				decimal subTotal = CalculateSubTotal();
 
-				foreach (var item in Cart)
-					subTotal += (item.Product.RetailPrice * item.QuantityInCart);
-				return subTotal.ToString("C");			
+				return subTotal.ToString("C");
 			}
 		}
 
-		public decimal Total
+		private decimal CalculateSubTotal()
+		{
+			decimal subTotal = 0;
+
+			foreach (var item in Cart)
+				subTotal += (item.Product.RetailPrice * item.QuantityInCart);
+
+			return subTotal;
+		}
+
+		public string Total
 		{
 			get
 			{
-				// შესაცვლელია გამოთვლებით
-				return 0;
+				decimal total = CalculateSubTotal() + CalculateTax();
+				return total.ToString("C");
 			}
 		}
 
-		public decimal Tax
+		public string Tax
 		{
 			get
 			{
-				// შესაცვლელია გამოთვლებით
-				return 0;
+				decimal taxAmount = CalculateTax();
+
+				return taxAmount.ToString("C");
 			}
 		}
 
+		private decimal CalculateTax()
+		{
+			decimal taxAmount = 0;
+			decimal taxRate = configHelper.GetTaxRate() / 100;
+
+			foreach (var item in Cart)
+				if (item.Product.IsTaxable)
+					taxAmount += (item.Product.RetailPrice * item.QuantityInCart * (taxRate));
+
+			return taxAmount;
+		}
 
 		public ProductModel SelectedProduct
 		{
@@ -100,12 +126,6 @@ namespace RMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => SelectedProduct);
 				NotifyOfPropertyChange(() => CanAddToCart);
 			}
-		}
-
-
-		public SalesViewModel(IProductEndpoint productEndpoint)
-		{
-			this.productEndpoint = productEndpoint;
 		}
 
 		protected override async void OnViewLoaded(object view)
@@ -163,6 +183,8 @@ namespace RMDesktopUI.ViewModels
 			SelectedProduct.QuantityInStock -= ItemQuantity;
 			ItemQuantity = 1;
 			NotifyOfPropertyChange(() => SubTotal);
+			NotifyOfPropertyChange(() => Tax);
+			NotifyOfPropertyChange(() => Total);
 		}
 
 		public bool CanRemoveFromCart
@@ -182,6 +204,8 @@ namespace RMDesktopUI.ViewModels
 		{
 			 
 			NotifyOfPropertyChange(() => SubTotal);
+			NotifyOfPropertyChange(() => Tax);
+			NotifyOfPropertyChange(() => Total);
 		}
 
 		public bool CanCheckOut

@@ -32,5 +32,10 @@ namespace RMDataManager.Library.Models
         /// რაოდენობა საწყობში
         /// </summary>
         public int QuantityInStock { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Boolean IsTaxable { get; set; }
     }
 }
