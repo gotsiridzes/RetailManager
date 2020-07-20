@@ -107,9 +107,13 @@ namespace RMDesktopUI.ViewModels
 			decimal taxAmount = decimal.Zero;
 			decimal taxRate = configHelper.GetTaxRate() / 100;
 
-			foreach (var item in Cart)
-				if (item.Product.IsTaxable)
-					taxAmount += (item.Product.RetailPrice * item.QuantityInCart * (taxRate));
+			taxAmount = cart
+				.Where(x => x.Product.IsTaxable)
+				.Sum(x => x.Product.RetailPrice * x.QuantityInCart * taxRate);
+
+			//foreach (var item in Cart)
+			//	if (item.Product.IsTaxable)
+			//		taxAmount += (item.Product.RetailPrice * item.QuantityInCart * (taxRate));
 
 			return taxAmount;
 		}
@@ -146,9 +150,6 @@ namespace RMDesktopUI.ViewModels
 			get 
 			{
 				bool output = false;
-
-				// უნდა შემოწმდეს რომ არჩეულია ნივთი
-				// უნდა შემოწმდეს რომ რაოდენობა ცარიელი არ არის
 
 				if (ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
 				{
