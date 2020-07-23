@@ -4,6 +4,7 @@ using RMDesktopUI.Library.Helpers;
 using RMDesktopUI.Library.Models;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace RMDesktopUI.ViewModels
@@ -16,11 +17,15 @@ namespace RMDesktopUI.ViewModels
 		private BindingList<CartItemModel> cart = new BindingList<CartItemModel>();
 		private ProductModel selectedProduct;
 		private IConfigHelper configHelper;
-
-		public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
+		private ISaleEndpoint saleEndpoint;
+		
+		public SalesViewModel(IProductEndpoint productEndpoint, 
+			ISaleEndpoint saleEndpoint, 
+			IConfigHelper configHelper)
 		{
 			this.productEndpoint = productEndpoint;
 			this.configHelper = configHelper;
+			this.saleEndpoint = saleEndpoint;
 		}
 
 		public BindingList<ProductModel> Products
@@ -186,6 +191,7 @@ namespace RMDesktopUI.ViewModels
 			NotifyOfPropertyChange(() => SubTotal);
 			NotifyOfPropertyChange(() => Tax);
 			NotifyOfPropertyChange(() => Total);
+			NotifyOfPropertyChange(() => CanCheckOut);
 		}
 
 		public bool CanRemoveFromCart
@@ -203,10 +209,10 @@ namespace RMDesktopUI.ViewModels
 
 		public void RemoveFromCart()
 		{
-			 
 			NotifyOfPropertyChange(() => SubTotal);
 			NotifyOfPropertyChange(() => Tax);
 			NotifyOfPropertyChange(() => Total);
+			NotifyOfPropertyChange(() => CanCheckOut);
 		}
 
 		public bool CanCheckOut
@@ -215,16 +221,27 @@ namespace RMDesktopUI.ViewModels
 			{
 				bool output = false;
 
-				// უნდა შემოწმდეს რომ არჩეულია ნივთი
-				// უნდა შემოწმდეს რომ რაოდენობა ცარიელი არ არის
-
+				if (Cart.Count >= 0)
+					output = true;
+				
 				return output;
 			}
 		}
 
-		public void CheckOut()
+		public async Task CheckOut()
 		{
+			var sale = new SaleModel();
 
+			foreach (var item in Cart)
+			{
+				sale.SaleDetails.Add(new SaleDetailModel
+				{
+					ProductId = item.Product.Id,
+					Quantity = item.QuantityInCart
+				});
+			}
+
+			await saleEndpoint.PostSale(sale);
 		}
 	}
 }

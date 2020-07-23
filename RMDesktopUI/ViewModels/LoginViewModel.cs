@@ -8,8 +8,8 @@ namespace RMDesktopUI.ViewModels
 {
 	public class LoginViewModel : Screen
     {
-		private string userName;
-		private string password;
+		private string userName = "gotsiridze.s@outlook.com";
+		private string password = "asdASD123!@#";
 		private IApiHelper apiHelper;
 		private IEventAggregator events;
 
