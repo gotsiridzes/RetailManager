@@ -145,6 +145,21 @@ namespace RMDesktopUI.ViewModels
 			}
 		}
 
+		private CartItemDisplayModel selectedCartItem;
+		public CartItemDisplayModel SelectedCartItem
+		{
+			get
+			{
+				return selectedCartItem;
+			}
+			set
+			{
+				selectedCartItem = value;
+				NotifyOfPropertyChange(() => SelectedCartItem);
+				NotifyOfPropertyChange(() => CanRemoveFromCart);
+			}
+		}
+
 		protected override async void OnViewLoaded(object view)
 		{
 			base.OnViewLoaded(view);
@@ -207,8 +222,10 @@ namespace RMDesktopUI.ViewModels
 			{
 				bool output = false;
 
-				// უნდა შემოწმდეს რომ არჩეულია ნივთი
-				// უნდა შემოწმდეს რომ რაოდენობა ცარიელი არ არის
+				if (SelectedCartItem != null && SelectedCartItem?.Product.QuantityInStock > 0)
+				{
+					output = true;
+				}
 
 				return output;
 			}
@@ -216,6 +233,18 @@ namespace RMDesktopUI.ViewModels
 
 		public void RemoveFromCart()
 		{
+			SelectedCartItem.Product.QuantityInStock += 1;
+			
+			if(SelectedCartItem.QuantityInCart > 1)
+			{
+				SelectedCartItem.QuantityInCart -= 1;
+			}
+			else
+			{
+				Cart.Remove(SelectedCartItem);
+			}
+
+
 			NotifyOfPropertyChange(() => SubTotal);
 			NotifyOfPropertyChange(() => Tax);
 			NotifyOfPropertyChange(() => Total);
