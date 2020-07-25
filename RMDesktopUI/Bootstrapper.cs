@@ -1,8 +1,10 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
 using RMDesktopUI.Helpers;
 using RMDesktopUI.Library.API;
 using RMDesktopUI.Library.Helpers;
 using RMDesktopUI.Library.Models;
+using RMDesktopUI.Models;
 using RMDesktopUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -28,6 +30,10 @@ namespace RMDesktopUI
 
         protected override void Configure()
         {
+            var mapper = ConfigureAutoMapper();
+
+            container.Instance(mapper);
+
             container
                 .Instance(container)
                 .PerRequest<IProductEndpoint, ProductEndpoint>()
@@ -47,10 +53,25 @@ namespace RMDesktopUI
                 .ForEach(viewModelType => container.RegisterPerRequest(viewModelType, viewModelType.ToString(), viewModelType));
         }
 
+        /// <summary>
+        /// აკონფიგურირებს AutoMapper-ს
+        /// </summary>
+        /// <returns></returns>
+        private static IMapper ConfigureAutoMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ProductModel, ProductDisplayModel>();
+                cfg.CreateMap<CartItemModel, CartItemDisplayModel>();
+            });
+
+            var mapper = config.CreateMapper();
+            return mapper;
+        }
+
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            //base.OnStartup(sender, e);
-            DisplayRootViewFor<ShellViewModel>();
+            DisplayRootViewFor  <ShellViewModel>();
         }
 
         protected override object GetInstance(Type service, string key)

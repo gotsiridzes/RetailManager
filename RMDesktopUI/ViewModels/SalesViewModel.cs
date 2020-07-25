@@ -1,34 +1,42 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
 using RMDesktopUI.Library.API;
 using RMDesktopUI.Library.Helpers;
 using RMDesktopUI.Library.Models;
+using RMDesktopUI.Models;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Windows.Documents;
 
 namespace RMDesktopUI.ViewModels
 {
 	public class SalesViewModel : Screen
     {
-		private BindingList<ProductModel> products;
+		private BindingList<ProductDisplayModel> products;
 		private int itemQuantity = 1;
 		private IProductEndpoint productEndpoint;
-		private BindingList<CartItemModel> cart = new BindingList<CartItemModel>();
-		private ProductModel selectedProduct;
+		private BindingList<CartItemDisplayModel> cart = new BindingList<CartItemDisplayModel>();
+		private ProductDisplayModel selectedProduct;
 		private IConfigHelper configHelper;
 		private ISaleEndpoint saleEndpoint;
-		
+		private IMapper mapper;
+
 		public SalesViewModel(IProductEndpoint productEndpoint, 
 			ISaleEndpoint saleEndpoint, 
-			IConfigHelper configHelper)
+			IConfigHelper configHelper,
+			IMapper mapper
+			)
 		{
 			this.productEndpoint = productEndpoint;
 			this.configHelper = configHelper;
 			this.saleEndpoint = saleEndpoint;
+			this.mapper = mapper;
 		}
 
-		public BindingList<ProductModel> Products
+		public BindingList<ProductDisplayModel> Products
 		{
 			get 
 			{
@@ -55,7 +63,7 @@ namespace RMDesktopUI.ViewModels
 			}
 		}
 
-		public BindingList<CartItemModel> Cart
+		public BindingList<CartItemDisplayModel> Cart
 		{
 			get 
 			{
@@ -123,7 +131,7 @@ namespace RMDesktopUI.ViewModels
 			return taxAmount;
 		}
 
-		public ProductModel SelectedProduct
+		public ProductDisplayModel SelectedProduct
 		{
 			get 
 			{
@@ -147,7 +155,8 @@ namespace RMDesktopUI.ViewModels
 		private async Task LoadProducts()
 		{
 			var productsList = await productEndpoint.GetAll();
-			Products = new BindingList<ProductModel>(productsList);
+			var products = mapper.Map<List<ProductDisplayModel>>(productsList);
+			Products = new BindingList<ProductDisplayModel>(products);
 		}
 
 		public bool CanAddToCart 
@@ -172,12 +181,10 @@ namespace RMDesktopUI.ViewModels
 			if (existingItem != null)
 			{
 				existingItem.QuantityInCart += ItemQuantity;
-				Cart.Remove(existingItem);
-				Cart.Add(existingItem);
 			}
 			else
 			{
-				var item = new CartItemModel
+				var item = new CartItemDisplayModel
 				{
 					Product = SelectedProduct,
 					QuantityInCart = ItemQuantity

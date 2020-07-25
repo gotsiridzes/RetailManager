@@ -36,6 +36,6 @@ namespace RMDesktopUI.Library.Models
         /// <summary>
         /// 
         /// </summary>
-        public Boolean IsTaxable { get; set; }
+        public bool IsTaxable { get; set; }
     }
 }

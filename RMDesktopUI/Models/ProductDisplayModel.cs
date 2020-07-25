@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RMDataManager.Library.Models
+namespace RMDesktopUI.Models
 {
-    public class ProductModel
+    public class ProductDisplayModel : INotifyPropertyChanged
     {
         /// <summary>
         /// პროდუქტის უნიკალური იდენტიფიკატორი
@@ -28,14 +29,36 @@ namespace RMDataManager.Library.Models
         /// </summary>
         public decimal RetailPrice { get; set; }
 
+        private int quantityInStock;
+
         /// <summary>
         /// რაოდენობა საწყობში
         /// </summary>
-        public int QuantityInStock { get; set; }
+        public int QuantityInStock
+        {
+            get 
+            {
+                return quantityInStock; 
+            }
+            set 
+            {
+                quantityInStock = value;
+                CallPropertyChanged(nameof(QuantityInStock));
+            }
+        }
+
 
         /// <summary>
         /// 
         /// </summary>
         public bool IsTaxable { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void CallPropertyChanged(string propertyName) 
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); 
+        }
+
     }
 }
