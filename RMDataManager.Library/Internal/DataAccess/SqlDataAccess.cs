@@ -44,6 +44,8 @@ namespace RMDataManager.Library.Internal.DataAccess
             connection = new SqlConnection(connectionString);
             connection.Open();
             transaction = connection.BeginTransaction();
+
+            isClosed = false;
         }
 
         public void SaveDataInTransaction<T>(string storedProcedure, T parameters)
@@ -67,21 +69,40 @@ namespace RMDataManager.Library.Internal.DataAccess
                 return rows;
         }
 
+        private bool isClosed = false;
+
         public void CommitTransaction()
         {
             transaction?.Commit();
             connection?.Close();
+
+            isClosed = true;
         }
 
         public void RollbackTransaction()
         {
             transaction?.Rollback();
             connection?.Close();
+
+            isClosed = true;
         }
 
         public void Dispose()
         {
-            CommitTransaction();
+            if (isClosed == false)
+            {
+                try
+                {
+                    CommitTransaction();
+                }
+                catch
+                {
+                    //უნდა დაილოგოს ეს შეცდომა
+                }
+            }
+
+            transaction = null;
+            connection = null;
         }
     }
 }
