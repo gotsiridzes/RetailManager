@@ -271,7 +271,7 @@ namespace RMDesktopUI.ViewModels
 			{
 				bool output = false;
 
-				if (Cart.Count >= 0)
+				if (Cart.Count > 0)
 					output = true;
 				
 				return output;
