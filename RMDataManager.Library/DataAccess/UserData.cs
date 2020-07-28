@@ -21,7 +21,7 @@ namespace RMDataManager.Library.DataAccess
 
             var parameters = new { Id = id };
 
-            var data = sql.LoadData<UserModel, dynamic>("dbo.spSelectUser", parameters, "RMData");
+            var data = sql.LoadData<UserModel, dynamic>("dbo.spUserSelect", parameters, "RMData");
 
             return data;
         }

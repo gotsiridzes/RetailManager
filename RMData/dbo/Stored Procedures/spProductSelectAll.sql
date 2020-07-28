@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spSelectProducts]
+﻿CREATE PROCEDURE [dbo].[spProductSelectAll]
 AS
 BEGIN
     SET NOCOUNT ON;

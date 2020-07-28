@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spInsertSaleDetail]
+﻿CREATE PROCEDURE [dbo].[spSaleDetailAdd]
 	@SaleId int,
 	@ProductId int,
 	@Quantity int,

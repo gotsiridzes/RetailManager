@@ -62,14 +62,14 @@ namespace RMDataManager.Library.DataAccess
                 {
                     sql.StartTransaction("RMData");
                     //sale mode
-                    sql.SaveDataInTransaction("dbo.spInsertSale", sale);
-                    sale.Id = sql.LoadDataInTransaction<int, dynamic>("dbo.spSelectSale", new { sale.CashierId, sale.SaleDate })
+                    sql.SaveDataInTransaction("dbo.spSaleAdd", sale);
+                    sale.Id = sql.LoadDataInTransaction<int, dynamic>("dbo.spSaleSelect", new { sale.CashierId, sale.SaleDate })
                                  .FirstOrDefault();
                     foreach (var item in saleDetails)
                     {
                         item.SaleId = sale.Id;
                         //sale details
-                        sql.SaveDataInTransaction("dbo.spInsertSaleDetail", item);
+                        sql.SaveDataInTransaction("dbo.spSaleDetailAdd", item);
                     }
                     sql.CommitTransaction();
                 }

@@ -18,7 +18,7 @@ namespace RMDataManager.Library.DataAccess
         {
             var sql = new SqlDataAccess();
 
-            var data = sql.LoadData<ProductModel, dynamic>("dbo.spSelectProducts", new { }, "RMData");
+            var data = sql.LoadData<ProductModel, dynamic>("dbo.spProductSelectAll", new { }, "RMData");
 
             return data;
         }
@@ -27,7 +27,10 @@ namespace RMDataManager.Library.DataAccess
         {
             var sql = new SqlDataAccess();
 
-            var data = sql.LoadData<ProductModel, dynamic>("dbo.spSelectProduct", new { Id = productId }, "RMData").FirstOrDefault();
+            var data = sql.LoadData<ProductModel, dynamic>(
+                "dbo.spProductSelect",
+                new { Id = productId },
+                "RMData").FirstOrDefault();
 
             return data;
         }
