@@ -18,7 +18,7 @@ namespace RMDataManager.Library.DataAccess
         /// <returns></returns>
         public void SaveSale(SaleModel saleInfo, string cashierId)
         {
-            //make this solid/dry
+            //make this solid/dryC:\Users\computer\OneDrive\Desktop\Projects\RetailManager\RMDataManager.Library\DataAccess\SaleData.cs
             var saleDetails = new List<SaleDetailDBModel>();
             var products = new ProductData();
             var taxRate = ConfigHelper.GetTaxRate() / 100;
@@ -79,6 +79,15 @@ namespace RMDataManager.Library.DataAccess
                     throw;
                 }
             }
+        }
+
+        public List<SaleReportModel> GetSaleReport()
+        {
+            SqlDataAccess sql = new SqlDataAccess();
+
+            var data = sql.LoadData<SaleReportModel, dynamic>("dbo.spSaleReport", new { }, "RMData");
+
+            return data;
         }
     }
 }
