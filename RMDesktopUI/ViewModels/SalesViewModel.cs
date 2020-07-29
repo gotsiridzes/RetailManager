@@ -10,6 +10,8 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Windows.Documents;
+using System.Dynamic;
+using System.Windows;
 
 namespace RMDesktopUI.ViewModels
 {
@@ -23,17 +25,23 @@ namespace RMDesktopUI.ViewModels
 		private IConfigHelper configHelper;
 		private ISaleEndpoint saleEndpoint;
 		private IMapper mapper;
+		private StatusInfoViewModel status;
+		private IWindowManager window;
 
 		public SalesViewModel(IProductEndpoint productEndpoint, 
 			ISaleEndpoint saleEndpoint, 
 			IConfigHelper configHelper,
-			IMapper mapper
+			IMapper mapper,
+			StatusInfoViewModel status,
+			IWindowManager window
 			)
 		{
 			this.productEndpoint = productEndpoint;
 			this.configHelper = configHelper;
 			this.saleEndpoint = saleEndpoint;
 			this.mapper = mapper;
+			this.status = status;
+			this.window = window;
 		}
 
 		public BindingList<ProductDisplayModel> Products
@@ -177,7 +185,30 @@ namespace RMDesktopUI.ViewModels
 		{
 			base.OnViewLoaded(view);
 
-			await LoadProducts();
+			try
+			{
+				await LoadProducts();
+			}
+			catch (System.Exception ex)
+			{
+				dynamic settings = new ExpandoObject();
+				settings.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+				settings.Resize = ResizeMode.NoResize;
+				settings.Title = "System Error";
+
+				if (ex.Message == "Unauthorized")
+				{
+					status.UpdateMessage("Unaothorized Access", "You do not have permission to interact with the sales form");
+					window.ShowDialog(status, null, settings);
+				}
+				else
+				{
+					status.UpdateMessage("Fatal Exception", ex.Message);
+					window.ShowDialog(status, null, settings);
+				}
+				
+				TryClose();
+			}
 		}
 
 		private async Task LoadProducts()
