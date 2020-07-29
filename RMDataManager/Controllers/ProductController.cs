@@ -5,7 +5,7 @@ using System.Web.Http;
 
 namespace RMDataManager.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Cashier,Manager,Admin")]
     public class ProductController : ApiController
     {
         [HttpGet]

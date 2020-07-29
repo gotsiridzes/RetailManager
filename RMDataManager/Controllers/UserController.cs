@@ -15,9 +15,8 @@ namespace RMDataManager.Controllers
         public UserModel GetById()
         {
             var userId = RequestContext.Principal.Identity.GetUserId();
-
             var data = new UserData();
-
+            
             return data.GetUserById(userId).First();
         }
     }

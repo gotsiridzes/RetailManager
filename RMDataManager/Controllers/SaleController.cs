@@ -10,10 +10,11 @@ using System.Web.Http;
 
 namespace RMDataManager.Controllers
 {
-    [Authorize]
+    //[Authorize(Roles ="Cashier")]
     public class SaleController : ApiController
     {
         [HttpPost]
+        [Authorize(Roles ="Cashier")]
         public void Post(SaleModel saleModel)
         {
             if (saleModel is null)
@@ -28,6 +29,7 @@ namespace RMDataManager.Controllers
             }
         }
 
+        [Authorize(Roles ="Manager,Admin")]
         [Route("GetSalesReport")]
         public List<SaleReportModel> GetSalesReport()
         {

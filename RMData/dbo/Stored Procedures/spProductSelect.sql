@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].[spProductSelect]
-    @id INT
+    @Id INT
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -12,5 +12,5 @@ BEGIN
         [QuantityInStock],
         [IsTaxable]
 	FROM dbo.Product p
-    WHERE p.[ID] = @id
+    WHERE p.[ID] = @Id
 END
