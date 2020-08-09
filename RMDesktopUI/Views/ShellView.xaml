@@ -18,6 +18,12 @@
                         FallbackValue=Collapsed}">
                 <MenuItem x:Name="LogOut" Header="_Log Out"></MenuItem>
             </MenuItem>
+            <MenuItem Header="_Users"
+                       Visibility="{Binding IsLoggedIn, 
+                        Converter={StaticResource BooleanToVisibilityConverter}, 
+                        FallbackValue=Collapsed}">
+                <MenuItem x:Name="UserManagement" Header="User_Management"></MenuItem>
+            </MenuItem>
         </Menu>
         <Grid>
             <ContentControl x:Name="ActiveItem" Margin="20 5 20 20">

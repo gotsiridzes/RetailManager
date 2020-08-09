@@ -45,6 +45,10 @@ namespace RMDesktopUI.ViewModels
             }
             set { } 
         }
+        public void UserManagement()
+        {
+            ActivateItem(IoC.Get<UserDisplayViewModel>());
+        }
 
         public void ExitApplication()
         {

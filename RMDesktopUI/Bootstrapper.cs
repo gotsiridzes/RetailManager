@@ -37,7 +37,8 @@ namespace RMDesktopUI
             container
                 .Instance(container)
                 .PerRequest<IProductEndpoint, ProductEndpoint>()
-                .PerRequest<ISaleEndpoint, SaleEndpoint>();
+                .PerRequest<ISaleEndpoint, SaleEndpoint>()
+                .PerRequest<IUserEndpoint, UserEndpoint>();
 
             container
                 .Singleton<IApiHelper, ApiHelper>()

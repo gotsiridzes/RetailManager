@@ -44,6 +44,43 @@ namespace RMDesktopUI.ViewModels
 			this.window = window;
 		}
 
+		protected override async void OnViewLoaded(object view)
+		{
+			base.OnViewLoaded(view);
+
+			try
+			{
+				await LoadProducts();
+			}
+			catch (System.Exception ex)
+			{
+				dynamic settings = new ExpandoObject();
+				settings.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+				settings.Resize = ResizeMode.NoResize;
+				settings.Title = "System Error";
+
+				if (ex.Message == "Unauthorized")
+				{
+					status.UpdateMessage("Unaothorized Access", "You do not have permission to interact with the sales form");
+					window.ShowDialog(status, null, settings);
+				}
+				else
+				{
+					status.UpdateMessage("Fatal Exception", ex.Message);
+					window.ShowDialog(status, null, settings);
+				}
+
+				TryClose();
+			}
+		}
+
+		private async Task LoadProducts()
+		{
+			var productsList = await productEndpoint.GetAll();
+			var products = mapper.Map<List<ProductDisplayModel>>(productsList);
+			Products = new BindingList<ProductDisplayModel>(products);
+		}
+
 		public BindingList<ProductDisplayModel> Products
 		{
 			get 
@@ -179,43 +216,6 @@ namespace RMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => SelectedCartItem);
 				NotifyOfPropertyChange(() => CanRemoveFromCart);
 			}
-		}
-
-		protected override async void OnViewLoaded(object view)
-		{
-			base.OnViewLoaded(view);
-
-			try
-			{
-				await LoadProducts();
-			}
-			catch (System.Exception ex)
-			{
-				dynamic settings = new ExpandoObject();
-				settings.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-				settings.Resize = ResizeMode.NoResize;
-				settings.Title = "System Error";
-
-				if (ex.Message == "Unauthorized")
-				{
-					status.UpdateMessage("Unaothorized Access", "You do not have permission to interact with the sales form");
-					window.ShowDialog(status, null, settings);
-				}
-				else
-				{
-					status.UpdateMessage("Fatal Exception", ex.Message);
-					window.ShowDialog(status, null, settings);
-				}
-				
-				TryClose();
-			}
-		}
-
-		private async Task LoadProducts()
-		{
-			var productsList = await productEndpoint.GetAll();
-			var products = mapper.Map<List<ProductDisplayModel>>(productsList);
-			Products = new BindingList<ProductDisplayModel>(products);
 		}
 
 		public bool CanAddToCart 
