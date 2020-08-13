@@ -12,8 +12,8 @@ using System.Windows;
 
 namespace RMDesktopUI.ViewModels
 {
-    public class UserDisplayViewModel : Screen
-    {
+	public class UserDisplayViewModel : Screen
+	{
 		private StatusInfoViewModel status;
 		private IWindowManager window;
 		private IUserEndpoint userEndpoint;
@@ -33,8 +33,102 @@ namespace RMDesktopUI.ViewModels
 
 		}
 
-		public UserDisplayViewModel(StatusInfoViewModel status, 
-			IWindowManager window, 
+		private UserModel selectedUser;
+
+		public UserModel SelectedUser
+		{
+			get
+			{
+				return selectedUser;
+			}
+			set
+			{
+				selectedUser = value;
+				SelectedUserName = value.Email;
+				UserRoles.Clear();
+				UserRoles = new BindingList<string>(value.Roles.Select(x => x.Value).ToList());
+				LoadRoles();
+				NotifyOfPropertyChange(() => SelectedUser);
+			}
+		}
+
+		private string selectedUserName;
+
+		public string SelectedUserName
+		{
+			get
+			{
+				return selectedUserName;
+			}
+			set
+			{
+				selectedUserName = value;
+				NotifyOfPropertyChange(() => SelectedUserName);
+			}
+		}
+
+		private BindingList<string> userRoles = new BindingList<string>();
+
+		public BindingList<string> UserRoles
+		{
+			get
+			{
+				return userRoles;
+			}
+			set
+			{
+				userRoles = value;
+				NotifyOfPropertyChange(() => UserRoles);
+			}
+		}
+
+		private BindingList<string> avaliableRoles = new BindingList<string>();
+
+		public BindingList<string> AvaliableRoles
+		{
+			get
+			{
+				return avaliableRoles;
+			}
+			set
+			{
+				avaliableRoles = value;
+				NotifyOfPropertyChange(() => AvaliableRoles);
+			}
+		}
+
+		private string selectedUserRole;
+
+		public string SelectedUserRole
+		{
+			get
+			{
+				return selectedUserRole;
+			}
+			set
+			{
+				selectedUserRole = value;
+				NotifyOfPropertyChange(() => SelectedUserRole);
+			}
+		}
+
+		private string selectedAvaliableRole;
+
+		public string SelectedAvaliableRole
+		{
+			get
+			{
+				return selectedAvaliableRole;
+			}
+			set
+			{
+				selectedAvaliableRole = value;
+				NotifyOfPropertyChange(() => SelectedAvaliableRole);
+			}
+		}
+
+		public UserDisplayViewModel(StatusInfoViewModel status,
+			IWindowManager window,
 			IUserEndpoint userEndpoint)
 		{
 			this.status = status;
@@ -76,6 +170,35 @@ namespace RMDesktopUI.ViewModels
 		{
 			var userList = await userEndpoint.GetAll();
 			Users = new BindingList<UserModel>(userList);
+		}
+
+		private async Task LoadRoles()
+		{
+			var rolesList = await userEndpoint.GetAllRoles();
+
+			foreach (var role in rolesList)
+			{
+				if (UserRoles.IndexOf(role.Value) < 0)
+				{
+					AvaliableRoles.Add(role.Value);
+				}
+			}
+		}
+
+		public async void AddSelectedRole()
+		{
+			await userEndpoint.AddUserToRole(SelectedUser.Id, SelectedAvaliableRole);
+
+			UserRoles.Add(SelectedAvaliableRole);
+			AvaliableRoles.Remove(SelectedAvaliableRole);
+		}
+
+		public async void RemoveSelectedRole()
+		{
+			await userEndpoint.RemoveUserFromRole(SelectedUser.Id, SelectedUserRole);
+
+			AvaliableRoles.Add(SelectedUserRole);
+			UserRoles.Remove(SelectedUserRole);
 		}
 	}
 }

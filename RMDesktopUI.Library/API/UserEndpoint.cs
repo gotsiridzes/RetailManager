@@ -17,6 +17,10 @@ namespace RMDesktopUI.Library.API
             this.apiHelper = apiHelper;
         }
 
+        /// <summary>
+        /// იღებს ყველა მომხმარებელს
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<UserModel>> GetAll()
         {
             using (var response = await apiHelper.ApiClient.GetAsync("api/User/Admin/GetAllUsers"))
@@ -27,6 +31,62 @@ namespace RMDesktopUI.Library.API
                     return result;
                 }
                 else
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+        }
+
+        /// <summary>
+        /// იღებს ყველა როლს
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Dictionary<string, string>> GetAllRoles()
+        {
+            using (var response = await apiHelper.ApiClient.GetAsync("api/User/Admin/GetAllRoles"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsAsync<Dictionary<string, string>>();
+                    return result;
+                }
+                else
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+        }
+
+        /// <summary>
+        /// მომხმარებლისთვის ახალი როლის დამატება
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
+        public async Task AddUserToRole(string userId, string roleName)
+        {
+            var data = new { userId, roleName };
+            using (var response = await apiHelper.ApiClient.PostAsJsonAsync("api/User/Admin/AddRole", data))
+            {
+                if (response.IsSuccessStatusCode == false)
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+        }
+
+        /// <summary>
+        /// მომხმარებლისთვის როლსი წაშლა
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
+        public async Task RemoveUserFromRole(string userId, string roleName)
+        {
+            var data = new { userId, roleName };
+            using (var response = await apiHelper.ApiClient.PostAsJsonAsync("api/User/Admin/RemoveRole", data))
+            {
+                if (response.IsSuccessStatusCode == false)
                 {
                     throw new Exception(response.ReasonPhrase);
                 }
