@@ -10,7 +10,7 @@ using System.Web.Http;
 
 namespace RMDataManager.Controllers
 {
-    //[Authorize(Roles ="Cashier")]
+    [Authorize]
     public class SaleController : ApiController
     {
         [HttpPost]
