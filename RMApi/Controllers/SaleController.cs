@@ -12,9 +12,9 @@ using RMDataManager.Library.Models;
 
 namespace RMApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     [Authorize]
+    [ApiController]
+    [Route("api/[controller]")]
     public class SaleController : ControllerBase
     {
         private readonly IConfiguration configuration;
@@ -41,8 +41,9 @@ namespace RMApi.Controllers
             }
         }
 
-        [Authorize(Roles = "Manager,Admin")]
+        [HttpGet]
         [Route("GetSalesReport")]
+        [Authorize(Roles = "Manager,Admin")]
         public List<SaleReportModel> GetSalesReport()
         {
             var data = new SaleData(configuration);

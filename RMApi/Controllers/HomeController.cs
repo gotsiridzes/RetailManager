@@ -31,7 +31,7 @@ namespace RMApi.Controllers
 
         public async Task<IActionResult> Privacy()
         {
-            //string[] roles = {"Admin", "Manager", "Cashier" };
+            //string[] roles = { "Admin", "Manager", "Cashier" };
 
             //foreach (var role in roles)
             //{

@@ -71,7 +71,7 @@ namespace RMDesktopUI.Library.API
             apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer { token }");
 
-            using (var response = await apiClient.GetAsync("api/User"))
+            using (var response = await apiClient.GetAsync("api/user"))
             {
                 if (response.IsSuccessStatusCode)
                 {

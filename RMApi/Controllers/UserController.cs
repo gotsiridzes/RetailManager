@@ -43,13 +43,10 @@ namespace RMApi.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        [Route("api/User/Admin/GetAllUsers")]
+        [Route("Admin/GetAllUsers")]
         public List<ApplicationUserModel> GetAllUsers()
         {
             var output = new List<ApplicationUserModel>();
-
-            //var userStore = new UserStore<ApplicationUser>(context);
-            //var userManager = new UserManager<ApplicationUser>(userStore);
 
             var users = context.Users.ToList();
             var userRoles = from ur in context.UserRoles
@@ -65,13 +62,7 @@ namespace RMApi.Controllers
                     Email = user.Email
                 };
 
-
-                u.Roles = userRoles.Where(x => x.UserId == u.Id).ToDictionary(key => key.UserId, value => value.Name);
-                
-                //foreach (var role in user.Roles)
-                //{
-                //    u.Roles.Add(role.RoleId, roles.Where(x => x.Id == role.RoleId).First().Name);
-                //}
+                u.Roles = userRoles.Where(x => x.UserId == u.Id).ToDictionary(key => key.RoleId, value => value.Name);
 
                 output.Add(u);
             }
@@ -80,7 +71,7 @@ namespace RMApi.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        [Route("api/User/Admin/GetAllRoles")]
+        [Route("Admin/GetAllRoles")]
         public Dictionary<string, string> GetAllRoles()
         {
             var roles = context.Roles.ToDictionary(x => x.Id, x => x.Name);
@@ -89,7 +80,7 @@ namespace RMApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        [Route("api/User/Admin/AddRole")]
+        [Route("Admin/AddRole")]
         public async Task AddRole(UserRolePairModel pairing)
         {
             var user = await userManager.FindByIdAsync(pairing.UserId);
@@ -98,7 +89,7 @@ namespace RMApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        [Route("api/User/Admin/RemoveRole")]
+        [Route("Admin/RemoveRole")]
         public async Task RemoveRole(UserRolePairModel pairing)
         {
             var user = await userManager.FindByIdAsync(pairing.UserId);
