@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System;
 using RMDesktopUI.Library.API;
 using RMDesktopUI.EventModels;
+using System.Threading;
 
 namespace RMDesktopUI.ViewModels
 {
@@ -101,7 +102,7 @@ namespace RMDesktopUI.ViewModels
 
 				await apiHelper.GetLoggedInUserInfo(result.Access_Token);
 
-				events.PublishOnUIThread(new LogOnEvent());
+				await events.PublishOnUIThreadAsync(new LogOnEvent(), new CancellationToken());
 			}
 			catch (Exception ex)
 			{

@@ -2,6 +2,8 @@
 using RMDesktopUI.EventModels;
 using RMDesktopUI.Library.API;
 using RMDesktopUI.Library.Models;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace RMDesktopUI.ViewModels
@@ -25,9 +27,10 @@ namespace RMDesktopUI.ViewModels
             this.container = container;
             this.user = user;
             this.apiHelper = apiHelper;
-            events.Subscribe(this);
 
-            ActivateItem(IoC.Get<LoginViewModel>());
+            events.SubscribeOnPublishedThread(this);
+
+            ActivateItemAsync(IoC.Get<LoginViewModel>(), new CancellationToken());
         }
 
         public bool IsLoggedIn 
@@ -45,30 +48,28 @@ namespace RMDesktopUI.ViewModels
             }
             set { } 
         }
-        public void UserManagement()
+        public async Task UserManagement()
         {
-            ActivateItem(IoC.Get<UserDisplayViewModel>());
+            await ActivateItemAsync(IoC.Get<UserDisplayViewModel>(), new CancellationToken());
         }
 
-        public void ExitApplication()
+        public async Task ExitApplication()
         {
-            TryClose();
+            await TryCloseAsync();
         }
 
-        public void LogOut()
+        public async Task LogOut()
         {
             user.ResetUserModel();
             apiHelper.LogOffUser();
-            ActivateItem(IoC.Get<LoginViewModel>());
+            await ActivateItemAsync(IoC.Get<LoginViewModel>(), new CancellationToken());
             NotifyOfPropertyChange(() => IsLoggedIn);
         }
 
-        public void Handle(LogOnEvent message)
+        public async Task HandleAsync(LogOnEvent message, CancellationToken cancellationToken)
         {
-            ActivateItem(salesVM);
-
+            await ActivateItemAsync(salesVM, cancellationToken);
             NotifyOfPropertyChange(() => IsLoggedIn);
         }
-
     }
 }
