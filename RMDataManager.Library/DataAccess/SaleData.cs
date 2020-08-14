@@ -1,4 +1,5 @@
-﻿using RMDataManager.Library.Internal.DataAccess;
+﻿using Microsoft.Extensions.Configuration;
+using RMDataManager.Library.Internal.DataAccess;
 using RMDataManager.Library.Models;
 using RMDesktopUI.Library.Helpers;
 using System;
@@ -12,6 +13,13 @@ namespace RMDataManager.Library.DataAccess
 {
     public class SaleData
     {
+        private readonly IConfiguration configuration;
+
+        public SaleData(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         /// <summary>
         /// დასაწერიმაქვს
         /// </summary>
@@ -20,7 +28,7 @@ namespace RMDataManager.Library.DataAccess
         {
             //make this solid/dryC:\Users\computer\OneDrive\Desktop\Projects\RetailManager\RMDataManager.Library\DataAccess\SaleData.cs
             var saleDetails = new List<SaleDetailDBModel>();
-            var products = new ProductData();
+            var products = new ProductData(configuration);
             var taxRate = ConfigHelper.GetTaxRate() / 100;
 
             foreach (var item in saleInfo.SaleDetails)
@@ -56,7 +64,7 @@ namespace RMDataManager.Library.DataAccess
 
             sale.Total = sale.SubTotal + sale.Tax;
 
-            using (var sql = new SqlDataAccess())
+            using (var sql = new SqlDataAccess(configuration))
             {
                 try
                 {
@@ -83,7 +91,7 @@ namespace RMDataManager.Library.DataAccess
 
         public List<SaleReportModel> GetSaleReport()
         {
-            SqlDataAccess sql = new SqlDataAccess();
+            SqlDataAccess sql = new SqlDataAccess(configuration);
 
             var data = sql.LoadData<SaleReportModel, dynamic>("dbo.spSaleReport", new { }, "RMData");
 

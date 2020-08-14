@@ -1,4 +1,5 @@
-﻿using RMDataManager.Library.Internal.DataAccess;
+﻿using Microsoft.Extensions.Configuration;
+using RMDataManager.Library.Internal.DataAccess;
 using RMDataManager.Library.Models;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,20 @@ namespace RMDataManager.Library.DataAccess
 {
     public class ProductData
     {
+        private readonly IConfiguration configuration;
+
+        public ProductData(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         /// <summary>
         /// პროდუქტების ინფორმაციის წამოღება მონაცემთა ბაზიდან
         /// </summary>
         /// <returns></returns>
         public List<ProductModel> GetProducts()
         {
-            var sql = new SqlDataAccess();
+            var sql = new SqlDataAccess(configuration);
 
             var data = sql.LoadData<ProductModel, dynamic>("dbo.spProductSelectAll", new { }, "RMData");
 
@@ -25,7 +33,7 @@ namespace RMDataManager.Library.DataAccess
 
         public ProductModel GetProductById(int productId)
         {
-            var sql = new SqlDataAccess();
+            var sql = new SqlDataAccess(configuration);
 
             var data = sql.LoadData<ProductModel, dynamic>(
                 "dbo.spProductSelect",

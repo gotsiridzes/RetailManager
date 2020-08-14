@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using RMDataManager.Library.DataAccess;
 using RMDataManager.Library.Models;
 
@@ -16,6 +17,13 @@ namespace RMApi.Controllers
     [Authorize]
     public class SaleController : ControllerBase
     {
+        private readonly IConfiguration configuration;
+
+        public SaleController(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         [HttpPost]
         [Authorize(Roles = "Cashier")]
         public void Post(SaleModel saleModel)
@@ -26,7 +34,7 @@ namespace RMApi.Controllers
             }
             else
             {
-                var data = new SaleData();
+                var data = new SaleData(configuration);
                 //var userId = RequestContext.Principal.Identity.GetUserId(); // for .net framework web api
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 data.SaveSale(saleModel, userId);
@@ -37,7 +45,7 @@ namespace RMApi.Controllers
         [Route("GetSalesReport")]
         public List<SaleReportModel> GetSalesReport()
         {
-            var data = new SaleData();
+            var data = new SaleData(configuration);
             return data.GetSaleReport();
         }
     }

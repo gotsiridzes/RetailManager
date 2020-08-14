@@ -1,4 +1,5 @@
-﻿using RMDataManager.Library.Internal.DataAccess;
+﻿using Microsoft.Extensions.Configuration;
+using RMDataManager.Library.Internal.DataAccess;
 using RMDataManager.Library.Models;
 using System;
 using System.Collections.Generic;
@@ -10,14 +11,16 @@ namespace RMDataManager.Library.DataAccess
 {
     public class UserData
     {
-        /// <summary>
-        /// მომხმარებლის ინფორმაციის წამოღება მონაცემთა ბაზიდან
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        private readonly IConfiguration configuration;
+
+        public UserData(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         public List<UserModel> GetUserById(string id)
         {
-            var sql = new SqlDataAccess();
+            var sql = new SqlDataAccess(configuration);
 
             var parameters = new { Id = id };
 
