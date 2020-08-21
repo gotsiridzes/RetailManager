@@ -22,7 +22,7 @@
                        Visibility="{Binding IsLoggedIn, 
                         Converter={StaticResource BooleanToVisibilityConverter}, 
                         FallbackValue=Collapsed}">
-                <MenuItem x:Name="UserManagement" Header="User_Management"></MenuItem>
+                <MenuItem x:Name="UserManagement" Header="User _Management"></MenuItem>
             </MenuItem>
         </Menu>
         <Grid>

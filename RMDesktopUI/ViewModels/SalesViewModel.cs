@@ -28,13 +28,12 @@ namespace RMDesktopUI.ViewModels
 		private StatusInfoViewModel status;
 		private IWindowManager window;
 
-		public SalesViewModel(IProductEndpoint productEndpoint, 
-			ISaleEndpoint saleEndpoint, 
-			IConfigHelper configHelper,
-			IMapper mapper,
-			StatusInfoViewModel status,
-			IWindowManager window
-			)
+		public SalesViewModel(IProductEndpoint productEndpoint,
+                        ISaleEndpoint saleEndpoint,
+                        IConfigHelper configHelper,
+                        IMapper mapper,
+                        StatusInfoViewModel status,
+                        IWindowManager window)
 		{
 			this.productEndpoint = productEndpoint;
 			this.configHelper = configHelper;
@@ -168,10 +167,6 @@ namespace RMDesktopUI.ViewModels
 			taxAmount = cart
 				.Where(x => x.Product.IsTaxable)
 				.Sum(x => x.Product.RetailPrice * x.QuantityInCart * taxRate);
-
-			//foreach (var item in Cart)
-			//	if (item.Product.IsTaxable)
-			//		taxAmount += (item.Product.RetailPrice * item.QuantityInCart * (taxRate));
 
 			return taxAmount;
 		}

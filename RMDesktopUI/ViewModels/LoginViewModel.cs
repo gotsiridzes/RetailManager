@@ -78,7 +78,7 @@ namespace RMDesktopUI.ViewModels
 			}
 		}
 
-		public bool CanLogIn//(string userName, string password)
+		public bool CanLogIn
 		{
 			get
 			{
@@ -97,8 +97,6 @@ namespace RMDesktopUI.ViewModels
 			{
 				ErrorMessage = string.Empty;
 				var result = await apiHelper.Authenticate(UserName, Password);
-
-				// მომხმარებელზე დამატებითი ინფორმაციის მიღება
 
 				await apiHelper.GetLoggedInUserInfo(result.Access_Token);
 
