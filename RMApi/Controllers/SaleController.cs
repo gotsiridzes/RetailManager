@@ -17,11 +17,11 @@ namespace RMApi.Controllers
     [Route("api/[controller]")]
     public class SaleController : ControllerBase
     {
-        private readonly IConfiguration configuration;
+        private readonly ISaleData saleData;
 
-        public SaleController(IConfiguration configuration)
+        public SaleController(ISaleData saleData)
         {
-            this.configuration = configuration;
+            this.saleData = saleData;
         }
 
         [HttpPost]
@@ -34,10 +34,9 @@ namespace RMApi.Controllers
             }
             else
             {
-                var data = new SaleData(configuration);
                 //var userId = RequestContext.Principal.Identity.GetUserId(); // for .net framework web api
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                data.SaveSale(saleModel, userId);
+                saleData.SaveSale(saleModel, userId);
             }
         }
 
@@ -46,8 +45,7 @@ namespace RMApi.Controllers
         [Authorize(Roles = "Manager,Admin")]
         public List<SaleReportModel> GetSalesReport()
         {
-            var data = new SaleData(configuration);
-            return data.GetSaleReport();
+            return saleData.GetSaleReport();
         }
     }
 }

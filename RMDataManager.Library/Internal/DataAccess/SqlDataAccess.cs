@@ -9,15 +9,18 @@ using System.Linq;
 
 namespace RMDataManager.Library.Internal.DataAccess
 {
-    internal class SqlDataAccess : IDisposable
+    public class SqlDataAccess : IDisposable, ISqlDataAccess
     {
         public SqlDataAccess(IConfiguration configuration)
         {
             this.configuration = configuration;
         }
 
-        public string GetConnectionString(string name) => configuration.GetConnectionString(name); //ConfigurationManager.ConnectionStrings[name].ConnectionString;
-        
+        public string GetConnectionString(string name)
+        {
+            return configuration.GetConnectionString(name);
+        }
+
         public List<T> LoadData<T, U>(string storedProcedure, U parameters, string connectionStringName)
         {
             var connectionString = GetConnectionString(connectionStringName);
@@ -40,7 +43,7 @@ namespace RMDataManager.Library.Internal.DataAccess
                 sqlConnection.Execute(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
             }
         }
-        
+
         private IDbConnection connection;
         private IDbTransaction transaction;
 
@@ -64,15 +67,15 @@ namespace RMDataManager.Library.Internal.DataAccess
 
         public List<T> LoadDataInTransaction<T, U>(string storedProcedure, U parameters)
         {
-                List<T> rows = connection
-                .Query<T>(
-                    storedProcedure,
-                    parameters,
-                    commandType: CommandType.StoredProcedure,
-                    transaction: transaction)
-                    .ToList();
+            List<T> rows = connection
+            .Query<T>(
+                storedProcedure,
+                parameters,
+                commandType: CommandType.StoredProcedure,
+                transaction: transaction)
+                .ToList();
 
-                return rows;
+            return rows;
         }
 
         private bool isClosed = false;

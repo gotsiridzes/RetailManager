@@ -9,24 +9,18 @@ using System.Threading.Tasks;
 
 namespace RMDataManager.Library.DataAccess
 {
-    public class UserData
+    public class UserData : IUserData
     {
-        private readonly IConfiguration configuration;
+        private readonly ISqlDataAccess sql;
 
-        public UserData(IConfiguration configuration)
+        public UserData(ISqlDataAccess sql)
         {
-            this.configuration = configuration;
+            this.sql = sql;
         }
 
-        public List<UserModel> GetUserById(string id)
+        public List<UserModel> GetUserById(string Id)
         {
-            var sql = new SqlDataAccess(configuration);
-
-            var parameters = new { Id = id };
-
-            var data = sql.LoadData<UserModel, dynamic>("dbo.spUserSelect", parameters, "RMData");
-
-            return data;
+            return sql.LoadData<UserModel, dynamic>("dbo.spUserSelect", new { Id }, "RMData");
         }
     }
 }

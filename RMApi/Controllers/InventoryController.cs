@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using RMDataManager.Library.DataAccess;
@@ -16,27 +12,25 @@ namespace RMApi.Controllers
     [Authorize]
     public class InventoryController : ControllerBase
     {
-        private readonly IConfiguration configuration;
+        private readonly IInventoryData inventoryData;
 
-        public InventoryController(IConfiguration configuration)
+        public InventoryController(IInventoryData inventoryData)
         {
-            this.configuration = configuration;
+            this.inventoryData = inventoryData;
         }
 
         [HttpGet]
         [Authorize(Roles = "Manager,Admin")]
         public List<InventoryModel> Get()
         {
-            var data = new InventoryData(configuration);
-            return data.GetInventory();
+            return inventoryData.GetInventory();
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public void Post(InventoryModel inventory)
         {
-            var data = new InventoryData(configuration);
-            data.SaveInventory(inventory);
+            inventoryData.SaveInventory(inventory);
         }
     }
 }
