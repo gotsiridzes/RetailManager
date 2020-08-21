@@ -13,8 +13,7 @@ namespace RMDesktopUI.Library.Helpers
         {
             string rateText = ConfigurationManager.AppSettings["taxRate"];
 
-            bool isValid = decimal.TryParse(rateText,
-                                            out decimal rate);
+            bool isValid = decimal.TryParse(rateText, out decimal rate);
 
             if (!isValid)
                 throw new ConfigurationErrorsException("The tax rate is not set up properly !");
