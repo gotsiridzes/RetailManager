@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,9 +12,14 @@ namespace RMDataManager.Library.Internal.DataAccess
 {
     public class SqlDataAccess : IDisposable, ISqlDataAccess
     {
-        public SqlDataAccess(IConfiguration configuration)
+        private bool isClosed = false;
+        private readonly IConfiguration configuration;
+        private readonly ILogger logger;
+
+        public SqlDataAccess(IConfiguration configuration, ILogger<SqlDataAccess> logger)
         {
             this.configuration = configuration;
+            this.logger = logger;
         }
 
         public string GetConnectionString(string name)
@@ -78,9 +84,6 @@ namespace RMDataManager.Library.Internal.DataAccess
             return rows;
         }
 
-        private bool isClosed = false;
-        private readonly IConfiguration configuration;
-
         public void CommitTransaction()
         {
             transaction?.Commit();
@@ -105,9 +108,9 @@ namespace RMDataManager.Library.Internal.DataAccess
                 {
                     CommitTransaction();
                 }
-                catch
+                catch(Exception ex)
                 {
-                    //უნდა დაილოგოს ეს შეცდომა
+                    logger.LogError(ex, "Commit transaction failed in Dispose method.");
                 }
             }
 
